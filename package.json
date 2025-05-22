@@ -1,0 +1,24 @@
+{
+  "name": "device-management-root",
+  "private": true,
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "postinstall": "npm run install:backend && npm run install:frontend",
+
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm start --prefix frontend",
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgGreen.bold\" \"npm:dev:backend\" \"npm:dev:frontend\"",
+
+    "start:backend": "npm run start --prefix backend",
+    "start:frontend": "npm start --prefix frontend",
+    "start": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"cyan.bold,magenta.bold\" \"npm:start:backend\" \"npm:start:frontend\"",
+
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "echo \"Backendnek nincs külön build lépése.\" && exit 0",
+    "build": "npm run build:frontend && npm run build:backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

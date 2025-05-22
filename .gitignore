@@ -72,7 +72,8 @@ build/Release
 
 # Yarn Integrity file
 .yarn-integrity
-
+node_modules/
+dist/
 frontend/.angular/
 frontend/.idea
 # dotenv environment variable files
