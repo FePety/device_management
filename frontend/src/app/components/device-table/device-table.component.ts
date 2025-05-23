@@ -10,23 +10,29 @@ import {interval, Subscription} from 'rxjs';
 import {DeviceService} from '../../services/device.service';
 import {switchMap} from 'rxjs/operators';
 import {SortEvent} from 'primeng/api';
+import {DeviceFormComponent} from "../device-form/device-form.component";
+import { DialogModule } from "primeng/dialog";
 
 @Component({
   selector: 'app-device-table',
   standalone: true,
-    imports: [
-      CommonModule,
-   //   RouterOutlet,
-      TableModule,
-      TagModule,
-      ButtonModule,
-      RippleModule
-    ],
+  imports: [
+    CommonModule,
+    //   RouterOutlet,
+    TableModule,
+    TagModule,
+    ButtonModule,
+    RippleModule,
+    DeviceFormComponent,
+    DialogModule
+  ],
   templateUrl: './device-table.component.html',
 })
 export class DeviceTableComponent implements OnInit, OnDestroy {
   devices: Device[] = [];
   private refreshSubscription!: Subscription;
+
+  displayDeviceForm = false;
 
   constructor(private deviceService: DeviceService) {}
 
@@ -122,15 +128,23 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
     this.first = this.first + 10;
   }
 
-  reset() {
-    this.first = 0;
+  showAddDeviceForm() {
+    this.displayDeviceForm = true;
+    console.log('Dialógus nyitva');
   }
 
-  onAddDevice() {
-    console.log("onAddDevice ");
+  onFormDialogHide() {
+    this.displayDeviceForm = false;
+    console.log('Dialógus bezárva');
   }
 
-  editedDevice(device: any) {
+  onDeviceSaved(device: Device) {
+    this.displayDeviceForm = false;
+    console.log('Eszköz mentve:', device);
+    this.loadDevices();
+  }
+
+  editDevice(device: any) {
     console.log("editedDevice name " + device.name);
     console.log("editedDevice status " + device.status);
   }

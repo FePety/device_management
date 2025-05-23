@@ -1,0 +1,106 @@
+<form [formGroup]="deviceForm" (ngSubmit)="onSubmit()" class="p-fluid p-input-filled">
+  <div class="p-formgrid p-grid">
+
+    <!-- Név -->
+    <div class="p-field p-col-12 p-md-6">
+      <label for="name" class="block mb-2 text-sm font-medium text-gray-700">Név</label>
+      <input
+        id="name"
+        type="text"
+        pInputText
+        formControlName="name"
+        [ngClass]="{
+          'p-invalid': deviceForm.get('name')?.invalid && deviceForm.get('name')?.touched,
+          'ng-valid ng-dirty': deviceForm.get('name')?.valid && deviceForm.get('name')?.touched
+        }"
+      />
+      <div style="min-height: 1.5em;">
+
+        <small
+          *ngIf="deviceForm.get('name')?.invalid && deviceForm.get('name')?.touched"
+          class="text-red-600 block mt-1"
+          style="min-height: 1em;"
+        >
+          A név megadása kötelező!
+        </small>
+      </div>
+    </div>
+
+    <!-- Típus -->
+    <div class="p-field p-col-12 p-md-6">
+      <label for="type" class="block mb-2 text-sm font-medium text-gray-700">Típus</label>
+      <input
+        id="type"
+        type="text"
+        pInputText
+        formControlName="type"
+        [ngClass]="{
+          'p-invalid': deviceForm.get('type')?.invalid && deviceForm.get('type')?.touched,
+          'ng-valid ng-dirty': deviceForm.get('type')?.valid && deviceForm.get('type')?.touched
+        }"
+      />
+      <div style="min-height: 1.5em;">
+        <small
+          *ngIf="deviceForm.get('type')?.invalid && deviceForm.get('type')?.touched"
+          class="text-red-600 block mt-1"
+          style="min-height: 1em;"
+        >
+          A típus megadása kötelező!
+        </small>
+      </div>
+    </div>
+
+    <!-- IP cím -->
+    <div class="p-field p-col-12 p-md-6">
+      <label for="ip" class="block mb-2 text-sm font-medium text-gray-700">IP cím</label>
+      <input
+        id="ip"
+        type="text"
+        pInputText
+        formControlName="ip"
+        [ngClass]="{
+          'p-invalid': deviceForm.get('ip')?.invalid && deviceForm.get('ip')?.touched,
+          'ng-valid ng-dirty': deviceForm.get('ip')?.valid && deviceForm.get('ip')?.touched
+        }"
+      />
+      <div style="min-height: 1.5em;">
+        <small
+          *ngIf="deviceForm.get('ip')?.invalid && deviceForm.get('ip')?.touched"
+          class="text-red-600 block mt-1"
+          style="min-height: 1em;"
+        >
+          Az IP cím megadása kötelező!
+        </small>
+      </div>
+    </div>
+
+    <!-- Helyszín -->
+    <div class="p-field p-col-12 p-md-6">
+      <label for="location" class="block mb-2 text-sm font-medium text-gray-700">Helyszín</label>
+      <input
+        id="location"
+        type="text"
+        pInputText
+        formControlName="location"
+        [ngClass]="{
+          'p-invalid': deviceForm.get('location')?.invalid && deviceForm.get('location')?.touched,
+          'ng-valid ng-dirty': deviceForm.get('location')?.valid && deviceForm.get('location')?.touched
+        }"
+      />
+      <div style="min-height: 1.5em;">
+        <small
+          *ngIf="deviceForm.get('location')?.invalid && deviceForm.get('location')?.touched"
+          class="text-red-600 block mt-1"
+          style="min-height: 1em;"
+        >
+          A helyszín megadása kötelező!
+        </small>
+      </div>
+    </div>
+
+    <!-- Gomb -->
+    <div class="p-field p-col-12" style="text-align: right;">
+      <button type="submit" pButton label="Mentés" [disabled]="deviceForm.invalid"></button>
+    </div>
+  </div>
+</form>
