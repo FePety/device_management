@@ -74,6 +74,7 @@
   >
     <app-device-form
       *ngIf="displayDeviceForm"
+      [device]="editedDevice"
       (deviceSaved)="onDeviceSaved($event)"
     ></app-device-form>
   </p-dialog>

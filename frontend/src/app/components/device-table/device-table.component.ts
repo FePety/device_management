@@ -4,7 +4,6 @@ import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {CommonModule} from '@angular/common';
-//import {RouterOutlet} from '@angular/router';
 import {Device} from '../../shared/models/device.model';
 import {interval, Subscription} from 'rxjs';
 import {DeviceService} from '../../services/device.service';
@@ -18,7 +17,6 @@ import { DialogModule } from "primeng/dialog";
   standalone: true,
   imports: [
     CommonModule,
-    //   RouterOutlet,
     TableModule,
     TagModule,
     ButtonModule,
@@ -34,6 +32,8 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
 
   displayDeviceForm = false;
 
+  editedDevice: Device | null = null;
+
   constructor(private deviceService: DeviceService) {}
 
   ngOnInit(): void {
@@ -46,7 +46,6 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.devices = data;
-          //console.log('Frissített devices:', this.devices);
         },
         error: (err) => {
           console.error('Hiba a device lekéréskor:', err);
@@ -109,7 +108,6 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
 
   pageChange(event: any) {
     this.first = event.first;
-    // Esetleg itt hívhatod újra a backendet (ha nem client-side page van)
   }
 
   isFirstPage(): boolean {
@@ -129,27 +127,36 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
   }
 
   showAddDeviceForm() {
+    this.editedDevice = null;
     this.displayDeviceForm = true;
-    console.log('Dialógus nyitva');
   }
 
   onFormDialogHide() {
     this.displayDeviceForm = false;
-    console.log('Dialógus bezárva');
+    this.editedDevice = null;
   }
 
   onDeviceSaved(device: Device) {
     this.displayDeviceForm = false;
-    console.log('Eszköz mentve:', device);
     this.loadDevices();
   }
 
-  editDevice(device: any) {
-    console.log("editedDevice name " + device.name);
-    console.log("editedDevice status " + device.status);
+  editDevice(device: Device) {
+    this.editedDevice = { ...device };
+    this.displayDeviceForm = true;
   }
 
   deleteDevice(device: any) {
-    console.log("deleteDevice name " + device.name);
-    console.log("deleteDevice status " + device.status);
+    if (confirm('Are you sure you want to delete this device?')) {
+      this.deviceService.deleteDevice(device.id).subscribe({
+        next: () => {
+          // Refresh the device list after successful deletion
+          this.loadDevices();
+        },
+        error: err => {
+          console.error('Error during deletion:', err);
+          alert('An error occurred while deleting the device!');
+        }
+      });
+    }
   }}

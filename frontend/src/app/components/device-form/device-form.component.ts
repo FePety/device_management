@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core'; // Importáld az Output-ot és EventEmitter-t
+import {Component, OnInit, Output, EventEmitter, Input, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { DeviceService } from '../../services/device.service';
 import { Device } from '../../shared/models/device.model';
@@ -19,8 +19,8 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     MessageModule
   ],
-  // styleUrls: ['./device-form.component.scss']
 })
+
 export class DeviceFormComponent implements OnInit {
   @Input() device: Device | null = null;
   @Output() deviceSaved = new EventEmitter<Device>();
@@ -31,6 +31,7 @@ export class DeviceFormComponent implements OnInit {
     private deviceService: DeviceService
   ) {}
 
+  //Angular lifecycle hook called once after the component is initialized.
   ngOnInit(): void {
     this.deviceForm = this.fb.group({
       name: ['', Validators.required],
@@ -44,24 +45,36 @@ export class DeviceFormComponent implements OnInit {
     }
   }
 
-  ngOnChanges() {
-    if (this.device && this.deviceForm) {
+  // Angular lifecycle hook called when input properties change.
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['device'] && this.device && this.deviceForm) {
       this.deviceForm.patchValue(this.device);
     }
   }
 
   onSubmit(): void {
-    console.log("submit form")
     if (this.deviceForm.valid) {
-      const device: Device = this.deviceForm.value;
-      this.deviceService.createDevice(device).subscribe({
-        next: res => {
-          console.log('Mentés sikeres!');
-          this.deviceSaved.emit(res);
-          this.deviceForm.reset();
-        },
-        error: err => console.error('Hiba:', err)
-      });
+      const formValue: Device = this.deviceForm.value;
+      if (this.device && this.device.id) {
+        // UPDATE (PUT)
+        const updatedDevice = { ...this.device, ...formValue };
+        this.deviceService.updateDevice(updatedDevice).subscribe({
+          next: res => {
+            this.deviceSaved.emit(res);
+            this.deviceForm.reset();
+          },
+          error: err => console.error('Hiba:', err)
+        });
+      } else {
+        // CREATE (POST)
+        this.deviceService.createDevice(formValue).subscribe({
+          next: res => {
+            this.deviceSaved.emit(res);
+            this.deviceForm.reset();
+          },
+          error: err => console.error('Hiba:', err)
+        });
+      }
     }
   }
 }
