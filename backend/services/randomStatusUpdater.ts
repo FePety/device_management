@@ -1,6 +1,4 @@
-// src/services/randomStatusUpdater.ts
 import { PrismaClient, Status } from '@prisma/client';
-import lockManager from './lockManager';
 
 const prisma = new PrismaClient();
 
@@ -21,14 +19,12 @@ async function updateDeviceStatusesPeriodically(): Promise<void> {
 
         const updatePromises: Promise<any>[] = [];
         for (const device of devices) {
-            if (!lockManager.isLocked(device.id)) {
-                updatePromises.push(
-                    prisma.device.update({
-                        where: { id: device.id },
-                        data: { status: getRandomStatus() },
-                    }),
-                );
-            }
+            updatePromises.push(
+                prisma.device.update({
+                    where: { id: device.id },
+                    data: { status: getRandomStatus() },
+                }),
+            );
         }
 
         if (updatePromises.length > 0) {
@@ -40,7 +36,7 @@ async function updateDeviceStatusesPeriodically(): Promise<void> {
     }
 }
 
-// Indító függvény, amit a server.ts hív meg egyszer
+// Startup function that server.ts calls once
 function startStatusUpdater(intervalMs = 4000): void {
     setInterval(() => {
         updateDeviceStatusesPeriodically();

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import lockManager from '../services/lockManager';
 import { Device as PrismaDevice } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -44,6 +43,41 @@ export const createDevice = async (req: Request, res: Response): Promise<void> =
     }
 };
 
+// Update a device
+export const updateDevice = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { name, type, ip, location, status } = req.body;
+
+    try {
+        // Checked data
+        const existingDevice = await prisma.device.findUnique({
+            where: { id: parseInt(id) },
+        });
+
+        if (!existingDevice) {
+            res.status(404).json({ error: 'Device not found.' });
+            return;
+        }
+
+        // Update data
+        const updatedDevice = await prisma.device.update({
+            where: { id: parseInt(id) },
+            data: {
+                name: name || existingDevice.name,
+                type: type || existingDevice.type,
+                ip: ip || existingDevice.ip,
+                location: location || existingDevice.location,
+                status: status || existingDevice.status,
+            },
+        });
+
+        res.status(200).json(updatedDevice);
+    } catch (err) {
+        console.error('Error while updating device:', err);
+        res.status(500).json({ error: 'Failed to update device.' });
+    }
+};
+
 // Delete a device
 export const deleteDevice = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
@@ -58,50 +92,3 @@ export const deleteDevice = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// Lock a device
-export const lockDevice = async (req: Request, res: Response): Promise<void> => {
-    const deviceId = parseInt(req.params.id);
-    const userId = req.body.userId;
-
-    if (!userId) {
-        res.status(400).json({ error: 'Missing userId in the request.' });
-        return;
-    }
-
-    try {
-        const locked = await lockManager.lockDevice(deviceId, userId);
-        if (locked) {
-            res.status(200).json({ success: true });
-        } else {
-            const currentUser = await lockManager.getLocker(deviceId);
-            res.status(423).json({ error: 'Already locked', lockedBy: currentUser });
-        }
-    } catch (err) {
-        console.error('Locking error:', err);
-        res.status(500).json({ error: 'Server error during locking.' });
-    }
-};
-
-// Unlock a device
-export const unlockDevice = async (req: Request, res: Response): Promise<void> => {
-    const deviceId = parseInt(req.params.id);
-    const userId = req.body.userId;
-    const force: boolean = req.body.force ?? false;
-
-    if (!userId) {
-        res.status(400).json({ error: 'Missing userId in the request.' });
-        return;
-    }
-
-    try {
-        const unlocked = await lockManager.unlockDevice(deviceId, userId, force);
-        if (unlocked) {
-            res.status(200).json({ success: true });
-        } else {
-            res.status(403).json({ error: 'Failed to unlock the device.' });
-        }
-    } catch (err) {
-        console.error('Unlock error:', err);
-        res.status(500).json({ error: 'Server error while unlocking.' });
-    }
-};
