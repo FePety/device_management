@@ -77,6 +77,7 @@ dist/
 frontend/.angular/
 frontend/.idea
 # dotenv environment variable files
+backend/prisma/dev.db
 backend/.env
 backend/.env.development.local
 backend/.env.test.local
