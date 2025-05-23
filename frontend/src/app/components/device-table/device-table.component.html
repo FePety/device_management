@@ -38,7 +38,7 @@
             pRipple
             icon="pi pi-pencil"
             class="p-button-rounded p-button-text p-button-warning"
-            (click)="editedDevice(device)"
+            (click)="editDevice(device)"
           ></button>
 
           <button
@@ -54,7 +54,27 @@
     </ng-template>
 
     <ng-template pTemplate="paginatorleft">
-      <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" (click)="onAddDevice()"></p-button>
+      <p-button
+        type="button"
+        icon="pi pi-plus"
+        styleClass="p-button-text"
+        (click)="showAddDeviceForm()"
+      ></p-button>
     </ng-template>
   </p-table>
+
+  <p-dialog
+    header="Új eszköz"
+    [(visible)]="displayDeviceForm"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="true"
+    [style]="{width: '400px'}"
+    (onHide)="onFormDialogHide()"
+  >
+    <app-device-form
+      *ngIf="displayDeviceForm"
+      (deviceSaved)="onDeviceSaved($event)"
+    ></app-device-form>
+  </p-dialog>
 </div>
