@@ -1,13 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TableModule} from 'primeng/table';
 import {TagModule} from 'primeng/tag';
 import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {CommonModule} from '@angular/common';
 import {Device} from '../../shared/models/device.model';
-import {interval, Subscription} from 'rxjs';
 import {DeviceService} from '../../services/device.service';
-import {switchMap} from 'rxjs/operators';
 import {SortEvent} from 'primeng/api';
 import {DeviceFormComponent} from "../device-form/device-form.component";
 import { DialogModule } from "primeng/dialog";
@@ -24,52 +22,17 @@ import { DialogModule } from "primeng/dialog";
     DeviceFormComponent,
     DialogModule
   ],
+  styleUrls: ['./device-table.component.scss'],
   templateUrl: './device-table.component.html',
 })
-export class DeviceTableComponent implements OnInit, OnDestroy {
-  devices: Device[] = [];
-  private refreshSubscription!: Subscription;
+export class DeviceTableComponent {
+  @Input() devices: Device[] = [];
+  @Output() deviceSaved = new EventEmitter<{ device: Device, action: 'add' | 'update' | 'delete' }>();
 
   displayDeviceForm = false;
-
   editedDevice: Device | null = null;
 
   constructor(private deviceService: DeviceService) {}
-
-  ngOnInit(): void {
-    this.loadDevices();
-
-    this.refreshSubscription = interval(4000)
-      .pipe(
-        switchMap(() => this.deviceService.getAllDevices())
-      )
-      .subscribe({
-        next: (data) => {
-          this.devices = data;
-        },
-        error: (err) => {
-          console.error('Hiba a device lekéréskor:', err);
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    if (this.refreshSubscription) {
-      this.refreshSubscription.unsubscribe();
-    }
-  }
-
-  loadDevices() {
-    this.deviceService.getAllDevices().subscribe({
-      next: (data) => {
-        this.devices = data;
-        //console.log('Devices:', this.devices);
-      },
-      error: (err) => {
-        console.error('Hiba a device lekéréskor:', err);
-      },
-    });
-  }
 
   getSeverity(status: 'active' | 'error' | 'inactive'): string {
     switch (status) {
@@ -110,18 +73,6 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
     this.first = event.first;
   }
 
-  isFirstPage(): boolean {
-    return this.first === 0;
-  }
-
-  isLastPage(): boolean {
-    return this.first + 10 >= this.devices.length; // 10 = rows
-  }
-
-  prev() {
-    this.first = this.first - 10;
-  }
-
   next() {
     this.first = this.first + 10;
   }
@@ -138,7 +89,8 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
 
   onDeviceSaved(device: Device) {
     this.displayDeviceForm = false;
-    this.loadDevices();
+    const action = this.editedDevice ? 'update' : 'add';
+    this.deviceSaved.emit({ device, action });
   }
 
   editDevice(device: Device) {
@@ -147,15 +99,15 @@ export class DeviceTableComponent implements OnInit, OnDestroy {
   }
 
   deleteDevice(device: any) {
-    if (confirm('Are you sure you want to delete this device?')) {
+    if (confirm('Biztosan törölni szeretnéd ezt az eszközt?')) {
       this.deviceService.deleteDevice(device.id).subscribe({
         next: () => {
-          // Refresh the device list after successful deletion
-          this.loadDevices();
+          this.deviceSaved.emit({ device, action: 'delete' });
         },
         error: err => {
-          console.error('Error during deletion:', err);
-          alert('An error occurred while deleting the device!');
+          console.error('Hiba történt a törlés során:', err);
+          alert('Hiba történt az eszköz törlése közben!');
+
         }
       });
     }

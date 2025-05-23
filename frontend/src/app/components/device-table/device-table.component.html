@@ -64,7 +64,7 @@
   </p-table>
 
   <p-dialog
-    header="Új eszköz"
+    [header]="editedDevice ? 'Eszköz szerkesztése' : 'Új eszköz'"
     [(visible)]="displayDeviceForm"
     [modal]="true"
     [closable]="true"

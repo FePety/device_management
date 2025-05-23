@@ -3,6 +3,8 @@
 </header>
 
 <main>
-  <app-device-table></app-device-table>
+  <app-device-table [devices]="devices"   (deviceSaved)="onDeviceChanged($event.device, $event.action)"></app-device-table>
+  <hr style="height: 5px; background-color: black; border: none;">
+  <app-p-chart [devices]="devices"></app-p-chart>
   <router-outlet></router-outlet>
 </main>

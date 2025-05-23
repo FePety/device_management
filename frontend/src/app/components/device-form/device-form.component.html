@@ -1,7 +1,6 @@
 <form [formGroup]="deviceForm" (ngSubmit)="onSubmit()" class="p-fluid p-input-filled">
   <div class="p-formgrid p-grid">
 
-    <!-- Név -->
     <div class="p-field p-col-12 p-md-6">
       <label for="name" class="block mb-2 text-sm font-medium text-gray-700">Név</label>
       <input
@@ -26,7 +25,6 @@
       </div>
     </div>
 
-    <!-- Típus -->
     <div class="p-field p-col-12 p-md-6">
       <label for="type" class="block mb-2 text-sm font-medium text-gray-700">Típus</label>
       <input
@@ -50,7 +48,6 @@
       </div>
     </div>
 
-    <!-- IP cím -->
     <div class="p-field p-col-12 p-md-6">
       <label for="ip" class="block mb-2 text-sm font-medium text-gray-700">IP cím</label>
       <input
@@ -74,7 +71,6 @@
       </div>
     </div>
 
-    <!-- Helyszín -->
     <div class="p-field p-col-12 p-md-6">
       <label for="location" class="block mb-2 text-sm font-medium text-gray-700">Helyszín</label>
       <input
@@ -98,7 +94,6 @@
       </div>
     </div>
 
-    <!-- Gomb -->
     <div class="p-field p-col-12" style="text-align: right;">
       <button type="submit" pButton label="Mentés" [disabled]="deviceForm.invalid"></button>
     </div>
