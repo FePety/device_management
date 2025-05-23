@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 // Get all devices
 export const getAllDevices = async (req: Request, res: Response): Promise<void> => {
+    console.log("getAllDevices");
     try {
         const devices: PrismaDevice[] = await prisma.device.findMany({
             orderBy: { id: 'asc' },

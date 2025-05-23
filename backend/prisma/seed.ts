@@ -13,7 +13,7 @@ type SeedDevice = {
 async function main() {
     const statuses: SeedDevice['status'][] = ['active', 'inactive', 'error'];
 
-    const devices: SeedDevice[] = Array.from({ length: 20 }, (_, i) => ({
+    const devices: SeedDevice[] = Array.from({ length: 13 }, (_, i) => ({
         name: `Device ${i + 1}`,
         type: 'sensor',
         ip: `192.168.1.${i + 1}`,
