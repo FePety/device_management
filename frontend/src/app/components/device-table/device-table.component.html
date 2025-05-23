@@ -1,0 +1,60 @@
+<div class="responsive-table-container">
+  <p-table
+    #dt
+    [value]="devices"
+    [paginator]="true"
+    [rows]="5"
+    [first]="first"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="[5, 10, 25]"
+    [customSort]="true"
+    (sortFunction)="customSort($event)"
+    (onPage)="pageChange($event)"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+        <th pSortableColumn="type">Type <p-sortIcon field="type"></p-sortIcon></th>
+        <th pSortableColumn="ip">IP <p-sortIcon field="ip"></p-sortIcon></th>
+        <th pSortableColumn="location">Location <p-sortIcon field="location"></p-sortIcon></th>
+        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-device>
+      <tr>
+        <td>{{ device.name }}</td>
+        <td>{{ device.type }}</td>
+        <td>{{ device.ip }}</td>
+        <td>{{ device.location }}</td>
+        <td><p-tag [value]="device.status" [severity]="getSeverity(device.status)"></p-tag></td>
+        <td style="width: 150px;">
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-text p-button-warning"
+            (click)="editedDevice(device)"
+          ></button>
+
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-text p-button-danger"
+            (click)="deleteDevice(device)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="paginatorleft">
+      <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" (click)="onAddDevice()"></p-button>
+    </ng-template>
+  </p-table>
+</div>

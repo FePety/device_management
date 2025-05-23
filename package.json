@@ -19,5 +19,10 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "prisma": "^6.8.2"
+  },
+  "dependencies": {
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primeng": "^19.1.3"
   }
 }

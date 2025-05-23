@@ -1,0 +1,15 @@
+.responsive-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .p-table {
+    font-size: 0.9rem;
+  }
+
+  .p-button {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+}

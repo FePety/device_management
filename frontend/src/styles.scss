@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+body {
+  font-family: var(--p-font-family);
+  background-color: var(--p-surface-ground) !important;
+  color: var(--p-text-color) !important;
+  margin: 0;
+  padding: 1rem;
+}

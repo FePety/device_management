@@ -1,4 +1,3 @@
-// src/server.ts
 import express from 'express';
 import cors from 'cors';
 import deviceRoutes from './routes/deviceRoutes';
@@ -6,7 +5,10 @@ import { startStatusUpdater } from './services/randomStatusUpdater';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+}));
+
 app.use(express.json());
 
 app.use('/api', deviceRoutes);
