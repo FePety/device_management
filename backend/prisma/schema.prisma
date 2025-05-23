@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,12 +13,17 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+enum Status {
+  active
+  error
+  inactive
+}
+
 model Device {
-  id       Int     @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
   type     String
   ip       String
   location String
-  status   String
+  status   Status
 }
-

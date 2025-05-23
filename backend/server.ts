@@ -1,0 +1,19 @@
+// src/server.ts
+import express from 'express';
+import cors from 'cors';
+import deviceRoutes from './routes/deviceRoutes';
+import { startStatusUpdater } from './services/randomStatusUpdater';
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/api', deviceRoutes);
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Szerver fut: http://localhost:${PORT}`);
+  startStatusUpdater(4000);
+  console.log("startStatusUpdater started.");
+});
