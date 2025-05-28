@@ -15,7 +15,12 @@ export const getAllDevices = async (req: Request, res: Response) => {
 export const createDevice = async (req: Request, res: Response) => {
     try {
         const { name, type, ip, location } = req.body;
-        const newDevice = await deviceService.createDevice({ name, type, ip, location } as any);
+        const newDevice = await deviceService.createDevice({
+            name,
+            type,
+            ip,
+            location
+        });
         res.status(201).json(newDevice);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
@@ -42,6 +47,9 @@ export const deleteDevice = async (req: Request, res: Response) => {
         await deviceService.deleteDevice(id);
         res.status(204).send();
     } catch (err: any) {
-        res.status(404).json({ error: err.message });
+        res.status(err.statusCode || 500).json({
+            error: err.message || 'Szerverhiba!'
+        });
     }
 };
+
