@@ -7,10 +7,6 @@ export class DeviceService implements IDeviceService {
         return prisma.device.findMany({ orderBy: { id: 'asc' } });
     }
 
-    async getDeviceById(id: number): Promise<Device | null> {
-        return prisma.device.findUnique({ where: { id } });
-    }
-
     async createDevice(data: Omit<Device, 'id' | 'status'>): Promise<Device> {
         if (!data.name || !data.type || !data.ip || !data.location) {
             throw new Error('Minden mező kitöltése kötelező!');
@@ -21,8 +17,9 @@ export class DeviceService implements IDeviceService {
     }
 
     async updateDevice(id: number, data: Partial<Device>): Promise<Device> {
-        const existingDevice = await prisma.device.findUnique({ where: { id } });
-        if (!existingDevice) throw new Error('Eszköz nem található!');
+        if (data.status && !Object.values(Status).includes(data.status)) {
+            throw new Error('Érvénytelen státusz!');
+        }
         return prisma.device.update({ where: { id }, data });
     }
 
@@ -45,7 +42,10 @@ export class DeviceService implements IDeviceService {
     async updateAllDeviceStatuses(): Promise<void> {
         try {
             const devices = await prisma.device.findMany();
-            if (devices.length === 0) return;
+            if (!devices.length) {
+                console.warn('[CRON] Nincs frissíthető eszköz!');
+                return;
+            }
 
             const updatePromises = devices.map(device =>
                 prisma.device.update({
