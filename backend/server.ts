@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import deviceRoutes from './routes/deviceRoutes';
-import { startStatusUpdater } from './services/randomStatusUpdater';
+import { startStatusUpdater } from './tasks/randomStatusUpdater';
 
 const app = express();
 
